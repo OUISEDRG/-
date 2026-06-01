@@ -1,0 +1,123 @@
+<view class="container">
+  <view class="section">
+    <view class="section-title">
+      <text class="section-icon">👥</text>
+      <text>选择玩家数量</text>
+    </view>
+    <view class="player-count-selector">
+      <view
+        class="count-option {{playerCount === 2 ? 'active' : ''}}"
+        data-count="2"
+        bindtap="onSelectPlayerCount"
+      >
+        <text class="count-num">2</text>
+        <text class="count-label">人</text>
+      </view>
+      <view
+        class="count-option {{playerCount === 3 ? 'active' : ''}}"
+        data-count="3"
+        bindtap="onSelectPlayerCount"
+      >
+        <text class="count-num">3</text>
+        <text class="count-label">人</text>
+      </view>
+      <view
+        class="count-option {{playerCount === 4 ? 'active' : ''}}"
+        data-count="4"
+        bindtap="onSelectPlayerCount"
+      >
+        <text class="count-num">4</text>
+        <text class="count-label">人</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">
+      <text class="section-icon">💵</text>
+      <text>初始资金</text>
+    </view>
+    <view class="money-selector">
+      <view
+        class="money-option {{initialMoney === 10000 ? 'active' : ''}}"
+        data-money="10000"
+        bindtap="onSelectMoney"
+      >
+        <text class="money-amount">1万</text>
+      </view>
+      <view
+        class="money-option {{initialMoney === 15000 ? 'active' : ''}}"
+        data-money="15000"
+        bindtap="onSelectMoney"
+      >
+        <text class="money-amount">1.5万</text>
+      </view>
+      <view
+        class="money-option {{initialMoney === 20000 ? 'active' : ''}}"
+        data-money="20000"
+        bindtap="onSelectMoney"
+      >
+        <text class="money-amount">2万</text>
+      </view>
+      <view
+        class="money-option {{initialMoney === 30000 ? 'active' : ''}}"
+        data-money="30000"
+        bindtap="onSelectMoney"
+      >
+        <text class="money-amount">3万</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">
+      <text class="section-icon">🎭</text>
+      <text>选择角色 ({{selectedCount}}/{{playerCount}})</text>
+    </view>
+    <view class="role-grid">
+      <view
+        class="role-card {{item.selected ? 'selected' : ''}} {{item.disabled ? 'disabled' : ''}}"
+        wx:for="{{roles}}"
+        wx:key="id"
+        data-role="{{item.id}}"
+        bindtap="onSelectRole"
+      >
+        <view class="role-avatar" style="background: {{item.bgColor}}">
+          <text>{{item.avatar}}</text>
+        </view>
+        <text class="role-name">{{item.name}}</text>
+        <view class="role-check" wx:if="{{item.selected}}">
+          <text>✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section" wx:if="{{selectedCount > 0}}">
+    <view class="section-title">
+      <text class="section-icon">📋</text>
+      <text>当前玩家</text>
+    </view>
+    <view class="player-list">
+      <view
+        class="player-item"
+        wx:for="{{selectedRoles}}"
+        wx:key="index"
+      >
+        <text class="player-avatar">{{item.avatar}}</text>
+        <text class="player-name">{{item.displayName}}</text>
+        <text class="player-remove" data-index="{{index}}" bindtap="onRemoveRole">✕</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="start-btn-area">
+    <button
+      class="start-btn {{selectedCount === playerCount ? '' : 'disabled'}}"
+      disabled="{{selectedCount !== playerCount}}"
+      bindtap="onStartGame"
+    >
+      🎮 开始游戏
+    </button>
+  </view>
+</view>

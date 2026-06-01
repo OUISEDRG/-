@@ -1,0 +1,19 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/setup/setup",
+    "pages/game/game",
+    "pages/rules/rules",
+    "pages/gameover/gameover"
+  ],
+  "window": {
+    "navigationBarTitleText": "大富翁",
+    "navigationBarBackgroundColor": "#E74C3C",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F5F5F5",
+    "backgroundTextStyle": "dark"
+  },
+  "usingComponents": {},
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

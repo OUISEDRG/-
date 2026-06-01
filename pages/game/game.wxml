@@ -1,0 +1,102 @@
+<view class="game-container">
+  <view class="game-header">
+    <view class="header-left">
+      <text class="round-text">第 {{round}} 回合</text>
+    </view>
+    <view class="header-center">
+      <text class="turn-text">{{currentPlayerName}} 的回合</text>
+    </view>
+    <view class="header-right">
+      <button class="menu-btn" bindtap="onMenu">☰</button>
+    </view>
+  </view>
+
+  <view class="board-container" style="width: {{boardSize}}px; height: {{boardSize}}px;">
+    <view
+      class="cell {{cell.type}}"
+      wx:for="{{boardCells}}"
+      wx:key="id"
+      style="left: {{cell.x}}px; top: {{cell.y}}px; width: {{cellSize}}px; height: {{cellSize}}px;"
+      data-cell-id="{{cell.id}}"
+      bindtap="onCellTap"
+    >
+      <view class="cell-inner" style="background: {{cell.bgColor}};{{cell.ownerBorder ? 'border-color:' + cell.ownerBorder : ''}}">
+        <text class="cell-icon">{{cell.icon}}</text>
+        <text class="cell-name">{{cell.shortName || cell.name}}</text>
+        <view class="cell-price" wx:if="{{cell.type === 'property'}}">
+          <text>{{cell.displayPrice}}</text>
+        </view>
+        <view class="cell-players">
+          <text
+            class="cell-player-token"
+            wx:for="{{cell.players}}"
+            wx:key="*this"
+          >{{item}}</text>
+        </view>
+        <view class="cell-level-dots" wx:if="{{cell.level && cell.level > 0}}">
+          <text class="level-dot" wx:for="{{cell.level}}" wx:key="*this">■</text>
+        </view>
+        <view class="cell-owner-bar" wx:if="{{cell.ownerColor}}" style="background: {{cell.ownerColor}}"></view>
+      </view>
+    </view>
+
+    <view class="board-center" style="width: {{centerSize}}px; height: {{centerSize}}px; left: {{cellSize}}px; top: {{cellSize}}px;">
+      <text class="center-logo">🎲</text>
+      <text class="center-text">大富翁</text>
+    </view>
+  </view>
+
+  <view class="dice-area">
+    <dice
+      id="diceComponent"
+      disabled="{{diceDisabled}}"
+      bind:rollend="onDiceRollEnd"
+    ></dice>
+  </view>
+
+  <view class="players-panel" wx:if="{{players.length > 0}}">
+    <player-status
+      wx:for="{{players}}"
+      wx:key="id"
+      name="{{item.displayName}}"
+      avatar="{{item.avatar}}"
+      money="{{item.displayMoney}}"
+      props="{{item.propertiesCount}}"
+      current="{{item.isCurrent}}"
+      bankrupt="{{item.isBankrupt}}"
+      bgColor="{{item.bgColor}}"
+    ></player-status>
+  </view>
+
+  <view class="action-bar">
+    <button class="action-btn buy" wx:if="{{showBuyBtn}}" bindtap="onBuyProperty">🏠 购买</button>
+    <button class="action-btn build" wx:if="{{showBuildBtn}}" bindtap="onBuildHouse">🔨 建房</button>
+    <button class="action-btn bank" wx:if="{{showBankBtn}}" bindtap="onBank">🏦 银行</button>
+    <button class="action-btn props" wx:if="{{showPropsBtn}}" bindtap="onViewProps">📋 资产</button>
+    <button class="action-btn end-turn" wx:if="{{showEndTurnBtn}}" bindtap="onEndTurn">⏭ 结束回合</button>
+  </view>
+
+  <modal
+    visible="{{modalVisible}}"
+    title="{{modalTitle}}"
+    showConfirm="{{modalShowConfirm}}"
+    showCancel="{{modalShowCancel}}"
+    confirmText="{{modalConfirmText}}"
+    cancelText="{{modalCancelText}}"
+    bind:confirm="onModalConfirm"
+    bind:cancel="onModalCancel"
+  >
+    <view class="modal-body-content">{{modalContent}}</view>
+  </modal>
+
+  <view class="menu-overlay {{menuVisible ? 'show' : ''}}" bindtap="onCloseMenu">
+    <view class="menu-panel" catchtap="stopPropagation">
+      <text class="menu-title">游戏菜单</text>
+      <view class="menu-item" bindtap="onSaveGame">💾 保存游戏</view>
+      <view class="menu-item" bindtap="onLoadGame">📂 读取存档</view>
+      <view class="menu-item" bindtap="onRules">📖 游戏规则</view>
+      <view class="menu-item danger" bindtap="onQuitGame">🚪 退出游戏</view>
+      <button class="menu-close" bindtap="onCloseMenu">关闭</button>
+    </view>
+  </view>
+</view>

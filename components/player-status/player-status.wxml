@@ -1,0 +1,16 @@
+<view class="player-status {{current ? 'current' : ''}} {{bankrupt ? 'bankrupt' : ''}}">
+  <view class="status-left">
+    <view class="player-avatar" style="background: {{bgColor}}">
+      <text>{{avatar}}</text>
+    </view>
+    <view class="player-info">
+      <text class="player-name">{{name}}</text>
+      <text class="player-money">💵 {{money}}</text>
+    </view>
+  </view>
+  <view class="status-right">
+    <text class="player-props">{{props}}处地产</text>
+    <text class="turn-indicator" wx:if="{{current}}">当前</text>
+    <text class="turn-indicator bankrupt-text" wx:elif="{{bankrupt}}">破产</text>
+  </view>
+</view>

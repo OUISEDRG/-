@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "大富翁",
+  "usingComponents": {
+    "dice": "../../components/dice/dice",
+    "modal": "../../components/modal/modal",
+    "player-status": "../../components/player-status/player-status"
+  }
+}

@@ -1,0 +1,42 @@
+<view class="container">
+  <view class="header">
+    <view class="logo-area">
+      <text class="logo-icon">🎲</text>
+      <text class="logo-title">大富翁</text>
+      <text class="logo-subtitle">经典地产大亨</text>
+    </view>
+  </view>
+
+  <view class="menu-area">
+    <view class="menu-card new-game" bindtap="onNewGame">
+      <text class="menu-icon">🎮</text>
+      <view class="menu-text">
+        <text class="menu-title">开始新游戏</text>
+        <text class="menu-desc">选择人数和角色，开启大富翁之旅</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-card continue-game {{hasSavedGame ? '' : 'disabled'}}" bindtap="onContinueGame">
+      <text class="menu-icon">💾</text>
+      <view class="menu-text">
+        <text class="menu-title">继续游戏</text>
+        <text class="menu-desc">{{hasSavedGame ? '上次存档: ' + saveTimeText : '暂无存档'}}</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-card rules" bindtap="onRules">
+      <text class="menu-icon">📖</text>
+      <view class="menu-text">
+        <text class="menu-title">游戏规则</text>
+        <text class="menu-desc">了解游戏玩法和规则说明</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <view class="footer">
+    <text class="footer-text">🎉 经典大富翁 欢乐无限</text>
+  </view>
+</view>

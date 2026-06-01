@@ -1,0 +1,30 @@
+.container {
+  min-height: 100vh;
+  background: #F5F5F5;
+  padding: 24rpx 28rpx 40rpx;
+}
+
+.rule-section {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06);
+}
+
+.rule-header {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.rule-body {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.8;
+}
+
+.rule-item {
+  padding: 4rpx 0;
+}

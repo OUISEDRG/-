@@ -1,0 +1,76 @@
+<view class="container">
+  <view class="rule-section">
+    <view class="rule-header">🎯 游戏目标</view>
+    <view class="rule-body">
+      <text>通过购买地产、收取租金、经营资产，使其他所有玩家破产，成为最后的赢家！</text>
+    </view>
+  </view>
+
+  <view class="rule-section">
+    <view class="rule-header">🎲 基本玩法</view>
+    <view class="rule-body">
+      <view class="rule-item">1. 每位玩家轮流掷骰子，按点数前进</view>
+      <view class="rule-item">2. 停在无人地产上可选择购买</view>
+      <view class="rule-item">3. 停在他人地产上需支付过路费</view>
+      <view class="rule-item">4. 经过起点可获得 2000 元奖励</view>
+      <view class="rule-item">5. 可对自有地产进行升级，提升租金</view>
+    </view>
+  </view>
+
+  <view class="rule-section">
+    <view class="rule-header">🏠 地产系统</view>
+    <view class="rule-body">
+      <view class="rule-item">• 地产分为 6 个区域组，价格各不相同</view>
+      <view class="rule-item">• 购买地产后自动获得 Lv.1 等级</view>
+      <view class="rule-item">• 最高可升至 Lv.4，每次升级提升租金</view>
+      <view class="rule-item">• 地产等级越高，过路费越贵</view>
+      <view class="rule-item">• 地产升级需支付建筑费用</view>
+    </view>
+  </view>
+
+  <view class="rule-section">
+    <view class="rule-header">❓ 机会卡 & ⭐ 命运卡</view>
+    <view class="rule-body">
+      <view class="rule-item">• 停在机会/命运格子上时自动抽取卡片</view>
+      <view class="rule-item">• 卡片效果包括获得/损失金钱、前进/后退等</view>
+      <view class="rule-item">• 机会卡偏向小额收益/损失</view>
+      <view class="rule-item">• 命运卡效果更大，可能带来惊喜或危机</view>
+    </view>
+  </view>
+
+  <view class="rule-section">
+    <view class="rule-header">💰 银行系统</view>
+    <view class="rule-body">
+      <view class="rule-item">• 可在银行申请贷款，贷款金额 5000 元</view>
+      <view class="rule-item">• 贷款需支付 500 元利息</view>
+      <view class="rule-item">• 还款时需一次性还清本金和利息</view>
+      <view class="rule-item">• 贷款可以帮助缓解资金压力</view>
+    </view>
+  </view>
+
+  <view class="rule-section">
+    <view class="rule-header">💸 缴税</view>
+    <view class="rule-body">
+      <view class="rule-item">• 停在缴税/所得税格子上需支付相应税金</view>
+      <view class="rule-item">• 地产税根据当前地产情况征收</view>
+    </view>
+  </view>
+
+  <view class="rule-section">
+    <view class="rule-header">🏁 破产与胜利</view>
+    <view class="rule-body">
+      <view class="rule-item">• 当玩家资金为负数且总资产不足以抵债时宣告破产</view>
+      <view class="rule-item">• 破产后所有地产被释放</view>
+      <view class="rule-item">• 最后一名未被宣告破产的玩家获得胜利</view>
+    </view>
+  </view>
+
+  <view class="rule-section">
+    <view class="rule-header">💾 游戏存档</view>
+    <view class="rule-body">
+      <view class="rule-item">• 游戏过程中可手动保存进度</view>
+      <view class="rule-item">• 退出游戏时自动保存</view>
+      <view class="rule-item">• 主界面可读取存档继续游戏</view>
+    </view>
+  </view>
+</view>
