@@ -1,94 +1,81 @@
 <view class="game-container">
-  <view class="game-header">
-    <view class="header-left">
-      <text class="round-text">第 {{round}} 回合</text>
-    </view>
-    <view class="header-center">
-      <text class="turn-text">{{currentPlayerName}} 的回合</text>
-    </view>
-    <view class="header-right">
-      <button class="menu-btn" bindtap="onMenu">☰</button>
-    </view>
-  </view>
-
-  <view class="board-container" style="width: {{boardSize}}px; height: {{boardSize}}px;">
-    <view
-      class="cell {{cell.type}}"
-      wx:for="{{boardCells}}"
-      wx:key="id"
-      style="left: {{cell.x}}px; top: {{cell.y}}px; width: {{cellSize}}px; height: {{cellSize}}px;"
-      data-cell-id="{{cell.id}}"
-      bindtap="onCellTap"
-    >
-      <view class="cell-inner" style="background: {{cell.bgColor}};{{cell.ownerBorder ? 'border-color:' + cell.ownerBorder : ''}}">
-        <text class="cell-icon">{{cell.icon}}</text>
-        <text class="cell-name">{{cell.shortName || cell.name}}</text>
-        <view class="cell-price" wx:if="{{cell.type === 'property'}}">
-          <text>{{cell.displayPrice}}</text>
-        </view>
-        <view class="cell-players">
-          <text
-            class="cell-player-token"
-            wx:for="{{cell.players}}"
-            wx:key="*this"
-          >{{item}}</text>
-        </view>
-        <view class="cell-level-dots" wx:if="{{cell.level && cell.level > 0}}">
-          <text class="level-dot" wx:for="{{cell.level}}" wx:key="*this">■</text>
-        </view>
-        <view class="cell-owner-bar" wx:if="{{cell.ownerColor}}" style="background: {{cell.ownerColor}}"></view>
+  <!-- 顶部状态栏 (显示玩家状态) -->
+  <view class="status-bar">
+    <view class="status-item" wx:for="{{players}}" wx:key="id" style="opacity: {{item.isBankrupt ? 0.5 : 1}};">
+      <view class="avatar {{item.isCurrent ? 'active' : ''}}" style="border-color: {{item.roleColor}};">
+        {{item.avatar}}
       </view>
-    </view>
-
-    <view class="board-center" style="width: {{centerSize}}px; height: {{centerSize}}px; left: {{cellSize}}px; top: {{cellSize}}px;">
-      <text class="center-logo">🎲</text>
-      <text class="center-text">大富翁</text>
+      <view class="money">{{item.displayMoney}}</view>
     </view>
   </view>
 
-  <view class="dice-area">
-    <dice
-      id="diceComponent"
-      disabled="{{diceDisabled}}"
-      bind:rollend="onDiceRollEnd"
-    ></dice>
+  <!-- 核心：大富翁棋盘渲染区 -->
+  <view class="board-wrapper">
+    <view class="board" style="width: {{boardSize}}px; height: {{boardSize}}px;">
+      
+      <!-- 循环渲染所有格子 -->
+      <block wx:for="{{boardCells}}" wx:key="id">
+        <view class="cell"
+              style="width: {{cellSize}}px; height: {{cellSize}}px; left: {{item.x}}px; top: {{item.y}}px; background-color: {{item.bgColor}};"
+              bindtap="onCellTap"
+              data-cell-id="{{item.id}}">
+          
+          <!-- 1. 格子顶部色条 (用于区分地段) -->
+          <view class="cell-header" wx:if="{{item.type === 'property'}}" style="background-color: {{item.color}};"></view>
+          
+          <!-- 2. 格子名称与图标 -->
+          <view class="cell-content">
+            <text class="cell-name">{{item.shortName}}</text>
+            <text class="cell-icon" wx:if="{{item.icon && item.type !== 'property'}}">{{item.icon}}</text>
+            <text class="cell-price" wx:if="{{item.displayPrice}}">{{item.displayPrice}}</text>
+          </view>
+
+          <!-- 3. 房屋等级指示器 -->
+          <view class="house-level" wx:if="{{item.level > 0}}">
+            <text wx:for="{{item.level}}" wx:key="*this">🏠</text>
+          </view>
+
+          <!-- 4. 停留在该格子的玩家头像 -->
+          <view class="players-on-cell" wx:if="{{item.players && item.players.length > 0}}">
+            <text class="player-avatar" wx:for="{{item.players}}" wx:key="*this" wx:for-item="avatar">{{avatar}}</text>
+          </view>
+          
+          <!-- 5. 领地边框提示（如果有主人的话） -->
+          <view class="owner-border" wx:if="{{item.ownerBorder}}" style="border-color: {{item.ownerBorder}};"></view>
+        </view>
+      </block>
+
+      <!-- 棋盘中间的空地 (放回合数和骰子) -->
+      <view class="board-center" style="width: {{centerSize}}px; height: {{centerSize}}px; left: {{cellSize}}px; top: {{cellSize}}px;">
+        <view class="center-content">
+          <text class="round-text">第 {{round}} 轮</text>
+          <text class="turn-text">当前回合: {{currentPlayerName}}</text>
+          <!-- 引用骰子组件 -->
+          <view class="dice-wrapper">
+             <dice disabled="{{diceDisabled}}" bindrollend="onDiceRollEnd"></dice>
+          </view>
+        </view>
+      </view>
+      
+    </view>
   </view>
 
-  <view class="players-panel" wx:if="{{players.length > 0}}">
-    <player-status
-      wx:for="{{players}}"
-      wx:key="id"
-      name="{{item.displayName}}"
-      avatar="{{item.avatar}}"
-      money="{{item.displayMoney}}"
-      props="{{item.propertiesCount}}"
-      current="{{item.isCurrent}}"
-      bankrupt="{{item.isBankrupt}}"
-      bgColor="{{item.bgColor}}"
-    ></player-status>
-  </view>
-
+  <!-- 底部操作按钮栏 -->
   <view class="action-bar">
-    <button class="action-btn buy" wx:if="{{showBuyBtn}}" bindtap="onBuyProperty">🏠 购买</button>
-    <button class="action-btn build" wx:if="{{showBuildBtn}}" bindtap="onBuildHouse">🔨 建房</button>
-    <button class="action-btn bank" wx:if="{{showBankBtn}}" bindtap="onBank">🏦 银行</button>
-    <button class="action-btn props" wx:if="{{showPropsBtn}}" bindtap="onViewProps">📋 资产</button>
-    <button class="action-btn end-turn" wx:if="{{showEndTurnBtn}}" bindtap="onEndTurn">⏭ 结束回合</button>
+    <button class="btn btn-bank" wx:if="{{showBankBtn}}" bindtap="onBank">🏦 银行</button>
+    <button class="btn btn-props" wx:if="{{showPropsBtn}}" bindtap="onViewProps">📋 资产</button>
+    <button class="btn btn-buy" wx:if="{{showBuyBtn}}" bindtap="onBuyProperty">💰 买地</button>
+    <button class="btn btn-build" wx:if="{{showBuildBtn}}" bindtap="onBuildHouse">🏠 盖房</button>
+    <button class="btn btn-end" wx:if="{{showEndTurnBtn}}" bindtap="onEndTurn">⏭ 结束</button>
   </view>
 
-  <modal
-    visible="{{modalVisible}}"
-    title="{{modalTitle}}"
-    showConfirm="{{modalShowConfirm}}"
-    showCancel="{{modalShowCancel}}"
-    confirmText="{{modalConfirmText}}"
-    cancelText="{{modalCancelText}}"
-    bind:confirm="onModalConfirm"
-    bind:cancel="onModalCancel"
-  >
-    <view class="modal-body-content">{{modalContent}}</view>
-  </modal>
+  <!-- 全局弹窗模态框 -->
+  <modal visible="{{modalVisible}}" title="{{modalTitle}}" content="{{modalContent}}"
+         showConfirm="{{modalShowConfirm}}" showCancel="{{modalShowCancel}}"
+         confirmText="{{modalConfirmText}}" cancelText="{{modalCancelText}}"
+         bindconfirm="onModalConfirm" bindcancel="onModalCancel" />
 
+  <!-- 菜单侧边栏 -->
   <view class="menu-overlay {{menuVisible ? 'show' : ''}}" bindtap="onCloseMenu">
     <view class="menu-panel" catchtap="stopPropagation">
       <text class="menu-title">游戏菜单</text>

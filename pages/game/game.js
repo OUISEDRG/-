@@ -1,4 +1,4 @@
-const { BOARD_CELLS, BOARD_SIZE, ROLES, createInitialDeck, createPlayers, calculatePlayerNetWorth } = require('../../utils/game-data');
+const { BOARD_CELLS, BOARD_SIZE, ROLES, createInitialDeck, createPlayers, calculatePlayerNetWorth, getRentForLevel } = require('../../utils/game-data');
 const storage = require('../../utils/storage');
 const util = require('../../utils/util');
 
@@ -61,7 +61,6 @@ Page({
       round: 1,
       propertyLevels: {},
       propertyOwners: {},
-      propertyHouses: {},
       chanceDeck: createInitialDeck('chance'),
       fortuneDeck: createInitialDeck('fortune'),
       usedChanceCards: [],
@@ -104,7 +103,6 @@ Page({
       round: state.round || 1,
       propertyLevels: state.propertyLevels || {},
       propertyOwners: state.propertyOwners || {},
-      propertyHouses: state.propertyHouses || {},
       chanceDeck: state.chanceDeck || createInitialDeck('chance'),
       fortuneDeck: state.fortuneDeck || createInitialDeck('fortune'),
       usedChanceCards: state.usedChanceCards || [],
@@ -230,7 +228,6 @@ Page({
       showPropsBtn: !player.isBankrupt,
       showEndTurnBtn: true,
       currentPlayerName: player.displayName,
-      diceDisabled: false,
     });
   },
 
@@ -316,10 +313,10 @@ Page({
     } else if (owner !== playerIndex) {
       const ownerPlayer = this.data.players[owner];
       if (ownerPlayer && !ownerPlayer.isBankrupt) {
-        let rent = cell.baseRent || cell.rent;
-        const level = this.data.propertyLevels[cell.id] || 0;
-        if (level > 0) {
-          rent = rent * (1 + level * 0.5);
+        const level = this.data.propertyLevels[cell.id] || 1;
+        let rent = getRentForLevel(cell, level);
+        if (ownerPlayer.doubleRentTurns > 0) {
+          rent *= 2;
         }
         this.payRent(playerIndex, owner, cell, rent);
       } else {
@@ -764,11 +761,29 @@ Page({
     const player = this.data.players[playerIndex];
     if (!player) return;
 
-    if (player.money < 0) {
-      const totalValue = player.money + (player.properties || []).length * 500;
-      if (totalValue < 0) {
-        this.handleBankruptcy(playerIndex);
-      }
+    if (player.money >= 0) return;
+
+    let currentMoney = player.money;
+    let properties = [...(player.properties || [])];
+    const propertyOwners = { ...this.data.propertyOwners };
+    const propertyLevels = { ...this.data.propertyLevels };
+
+    while (currentMoney < 0 && properties.length > 0) {
+      const propToSell = properties.pop();
+      currentMoney += 500;
+      delete propertyOwners[propToSell];
+      delete propertyLevels[propToSell];
+    }
+
+    if (currentMoney < 0) {
+      this.handleBankruptcy(playerIndex);
+    } else {
+      const players = [...this.data.players];
+      players[playerIndex] = { ...player, money: currentMoney, properties };
+      this.setData({ players, propertyOwners, propertyLevels });
+      this.setupBoard();
+      this.updatePlayerStatus();
+      util.showToast('因资金为负，已自动变卖房产抵债', 'none');
     }
   },
 
@@ -778,6 +793,9 @@ Page({
       ...players[playerIndex],
       isBankrupt: true,
       properties: [],
+      hasLoan: false,
+      loanAmount: 0,
+      loanInterest: 0,
     };
 
     const propertyOwners = { ...this.data.propertyOwners };
@@ -889,7 +907,6 @@ Page({
       round: this.data.round,
       propertyLevels: this.data.propertyLevels,
       propertyOwners: this.data.propertyOwners,
-      propertyHouses: this.data.propertyHouses,
       chanceDeck: this.data.chanceDeck,
       fortuneDeck: this.data.fortuneDeck,
       usedChanceCards: this.data.usedChanceCards,

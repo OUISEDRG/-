@@ -4,7 +4,8 @@
       <text class="modal-title">{{title}}</text>
     </view>
     <view class="modal-body">
-      <slot></slot>
+      <text wx:if="{{content}}" class="modal-content-text">{{content}}</text>
+      <slot wx:else></slot>
     </view>
     <view class="modal-footer" wx:if="{{showConfirm || showCancel}}">
       <button class="modal-btn cancel" wx:if="{{showCancel}}" bindtap="onCancel">{{cancelText}}</button>

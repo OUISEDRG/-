@@ -53,6 +53,15 @@
   max-height: calc(70vh - 120rpx);
 }
 
+.modal-content-text {
+  font-size: 28rpx;
+  color: #555;
+  line-height: 1.6;
+  text-align: center;
+  white-space: pre-line;
+  display: block;
+}
+
 .modal-footer {
   display: flex;
   padding: 20rpx 32rpx 32rpx;

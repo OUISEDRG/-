@@ -8,6 +8,10 @@ Component({
       type: String,
       value: ''
     },
+    content: {
+      type: String,
+      value: ''
+    },
     showConfirm: {
       type: Boolean,
       value: true
