@@ -18,6 +18,7 @@ Page({
     jumpingCellId: -1,
     roomId: '', myIndex: 0, isOnline: false, isMyTurn: false, waitingText: '',
     boardTransform: '', // 视角跟随的变换值
+    playerTokens: [],
     showPropActions: false, propActionItems: [],
     showBuyPropActions: false, buyPropItems: [],
     teleportMode: false,
@@ -141,79 +142,177 @@ Page({
       boardCells: cells,
       boardSize: bs,
       cellSize: cs,
-      centerSize: cts
+      centerSize: cts,
+      playerTokens,
     });
     
     // 初始化视角
-    this.updateBoardTransform();
+    this.refreshPlayerTokens();
   },
   
   // 更新棋盘视角，跟随当前玩家
-  updateBoardTransform() {
-    if (!this.data.gameStarted || !this.data.players.length) return;
-    
-    const cp = this.data.players[this.data.currentPlayerIndex];
-    if (!cp || cp.isBankrupt) return;
-    
-    // 获取当前玩家位置的像素坐标
-    const cellPos = this.getCellPixelPosition(cp.position, this.data.cellSize);
-    const bs = this.data.boardSize;
-    const cs = this.data.cellSize;
-    
-    // 计算棋盘中心位置
-    const centerX = bs / 2;
-    const centerY = bs / 2;
-    
-    // 计算偏移量，让玩家位置尽量靠近视野中心
-    // 玩家位置的中心
-    const playerCenterX = cellPos.x + cs / 2;
-    const playerCenterY = cellPos.y + cs / 2;
-    
-    // 计算需要的偏移
-    let offsetX = centerX - playerCenterX;
-    let offsetY = centerY - playerCenterY;
-    
-    // 限制偏移范围，确保棋盘始终在视野内
-    const maxOffset = bs * 0.15;
-    offsetX = Math.max(-maxOffset, Math.min(maxOffset, offsetX));
-    offsetY = Math.max(-maxOffset, Math.min(maxOffset, offsetY));
-    
-    // 设置 transform（用于视觉跟随）
-    const transform = `translate(${offsetX}px, ${offsetY}px)`;
-    this.setData({ boardTransform: transform });
+  
+
+  ﻿// ===== 棋盘坐标算法（百分比定位，完美闭合正方形）=====
+// 7x7网格，28格沿周长分布。四角各承载2格（经典大富翁布局）
+// gridX, gridY: 0-6 的虚拟坐标
+getCellGridPosition(cellId) {
+  const S = BOARD_SIZE; // 7
+  const perSide = 7; // 每边7格
+  const side = Math.floor(cellId / perSide); // 0=上, 1=右, 2=下, 3=左
+  const idx = cellId % perSide; // 0-6
+
+  let gridX, gridY;
+  switch (side) {
+    case 0: gridX = idx;        gridY = S - 1; break; // 上边: (0..6, 6)
+    case 1: gridX = S - 1;      gridY = S - 1 - idx; break; // 右边: (6, 6..0)
+    case 2: gridX = S - 1 - idx; gridY = 0; break; // 下边: (6..0, 0)
+    case 3: gridX = 0;          gridY = idx; break; // 左边: (0, 0..6)
+  }
+  return { gridX, gridY };
+},
+
+// 百分比定位：格子在棋盘内的 left/top 百分比
+getCellPercentPosition(cellId) {
+  const S = BOARD_SIZE;
+  const { gridX, gridY } = this.getCellGridPosition(cellId);
+  return {
+    left: (gridX / (S - 1)) * 100,  // 0% ~ 100%
+    top: ((S - 1 - gridY) / (S - 1)) * 100, // 0% ~ 100%（y轴翻转）
+  };
+},
+
+// 像素定位（用于玩家头像渲染）
+getCellPixelXY(cellId, cellPx) {
+  const pct = this.getCellPercentPosition(cellId);
+  return {
+    x: (pct.left / 100) * (cellPx * (BOARD_SIZE - 1)),
+    y: (pct.top / 100) * (cellPx * (BOARD_SIZE - 1)),
+  };
+},
+
+setupBoard() {
+  const si = wx.getSystemInfoSync();
+  // 棋盘大小：取屏幕宽度的82%，最大480px
+  const bs = Math.min(si.windowWidth * 0.82, 480);
+  const cs = bs / BOARD_SIZE; // 每格像素
+  const cts = bs - cs * 2;    // 中心空地
+
+  const cells = BOARD_CELLS.map(c => {
+    const pos = this.getCellPercentPosition(c.id);
+    const od = this.getOwnerData(c.id);
+    const lv = this.getCellLevel(c.id);
+    // 四角cell特殊标记（id=0,7,14,21）
+    const isCorner = ['start','corner'].includes(c.type);
+
+    return {
+      ...c,
+      left: pos.left,
+      top: pos.top,
+      cellSize: cs,
+      isCorner,
+      bgColor: this.getCellBgColor(c, od),
+      shortName: c.name.length > 3 ? c.name.substring(0, 2) : c.name,
+      displayPrice: c.price ? (c.price / 1000).toFixed(0) + 'k' : '',
+      level: lv,
+      ownerColor: od ? od.color : '',
+      ownerBorder: od ? od.color : '',
+      isProperty: c.type === 'property',
+      isChance: c.type === 'chance',
+      isFortune: c.type === 'fortune',
+      isTax: c.type === 'tax',
+    };
+  });
+
+  // 玩家位置数据
+  const playerTokens = this.data.players
+    .filter(p => !p.isBankrupt)
+    .map(p => {
+      const pos = this.getCellPercentPosition(p.position);
+      // 同格多人时微调偏移
+      const sameCell = this.data.players.filter(
+        pp => !pp.isBankrupt && pp.position === p.position
+      );
+      const myIdx = sameCell.findIndex(pp => pp.id === p.id);
+      const totalOnCell = sameCell.length;
+      const offsetX = totalOnCell > 1 ? ((myIdx - (totalOnCell - 1) / 2) * 10) : 0;
+
+              const boardPx3 = cs * (BOARD_SIZE - 1);
+        const px3 = (pos.left / 100) * boardPx3;
+        const py3 = (pos.top / 100) * boardPx3;
+
+return {
+        id: p.id,
+        avatar: p.avatar,
+        roleColor: p.roleColor,
+        displayName: p.displayName,
+        isCurrent: p.id === this.data.players[this.data.currentPlayerIndex]?.id,
+                  leftPx: px3,
+                  topPx: py3,
+        offsetX,
+      };
+    });
+
+  this.setData({
+    boardCells: cells,
+    boardSize: bs,
+    cellSize: cs,
+    centerSize: cts,
+    playerTokens,
+  });
+},
+
+getCellBgColor(c, od) {
+  if (c.type === 'property' && od) return od.bgColor || '#FFF5F5';
+  return '';
+},
+
+getOwnerData(cid) {
+  const o = this.data.propertyOwners[cid];
+  if (o !== undefined) {
+    const p = this.data.players[o];
+    if (p && !p.isBankrupt) return { color: p.roleColor, bgColor: p.bgColor };
+  }
+  return null;
+},
+
+getCellLevel(cid) {
+  return this.data.propertyLevels[cid] || 0;
+},
+
+// 刷新玩家Token（不重建棋盘时调用）
+refreshPlayerTokens() {
+    const cs = this.data.cellSize || 50;
+    const tokens = this.data.players
+      .filter(p => !p.isBankrupt)
+      .map(p => {
+        const pos = this.getCellPercentPosition(p.position);
+        const sameCell = this.data.players.filter(
+          pp => !pp.isBankrupt && pp.position === p.position
+        );
+        const myIdx = sameCell.findIndex(pp => pp.id === p.id);
+        const totalOnCell = sameCell.length;
+        const offsetX = totalOnCell > 1 ? ((myIdx - (totalOnCell - 1) / 2) * 12) : 0;
+        const boardPx = cs * (BOARD_SIZE - 1);
+        const px = (pos.left / 100) * boardPx;
+        const py = (pos.top / 100) * boardPx;
+
+        return {
+          id: p.id,
+          avatar: p.avatar,
+          roleColor: p.roleColor,
+          displayName: p.displayName,
+          isCurrent: p.id === this.data.players[this.data.currentPlayerIndex]?.id,
+          leftPx: px,
+          topPx: py,
+          offsetX,
+        };
+      });
+    this.setData({ playerTokens: tokens });
   },
 
-  getCellPixelPosition(cid, cs) {
-    const s = BOARD_SIZE;
-    if (cid < s) return { x: cid*cs, y: (s-1)*cs };
-    if (cid < 2*s-1) return { x: (s-1)*cs, y: (s-1-(cid-s+1))*cs };
-    if (cid < 3*s-2) return { x: (s-1-(cid-2*s+2))*cs, y: 0 };
-    return { x: 0, y: (cid-3*s+3)*cs };
-  },
-  
-  getCellBgColor(c, od) {
-    return c.type==='property' ? (od?od.bgColor||'#FFF':'#FFFFFF') : '';
-  },
-  
-  getOwnerData(cid) {
-    const o = this.data.propertyOwners[cid];
-    if (o !== undefined) {
-      const p = this.data.players[o];
-      if (p && !p.isBankrupt) return { color: p.roleColor, bgColor: p.bgColor };
-    }
-    return null;
-  },
-  getCellLevel(cid) {
-    return this.data.propertyLevels[cid] || 0;
-  },
-  
-  getPlayersOnCell(cid) {
-    return this.data.players
-      .filter(p => !p.isBankrupt && p.position === cid)
-      .map(p => p.avatar);
-  },
+updateUI() {
 
-  updateUI() {
     const p = this.data.players[this.data.currentPlayerIndex];
     if (!p) return;
     
@@ -294,8 +393,7 @@ Page({
       p.position = np;
       ps[pi] = p;
       this.setData({ players: ps, jumpingCellId: np });
-      this.setupBoard();
-      this.updateBoardTransform(); // 更新视角
+      this.setupBoard(); // 更新视角
       
       if (np === 0) {
         p.money += 2000;
@@ -311,8 +409,7 @@ Page({
     }
     
     this.updatePlayerStatus();
-    this.setupBoard();
-    this.updateBoardTransform(); // 更新视角
+    this.setupBoard(); // 更新视角
     await sleep(200);
     this.setData({ jumpingCellId: -1 });
     this.handleLanding(pi);
@@ -331,14 +428,12 @@ Page({
       p.position = np;
       ps[pi] = p;
       this.setData({ players: ps, jumpingCellId: np });
-      this.setupBoard();
-      this.updateBoardTransform(); // 更新视角
+      this.setupBoard(); // 更新视角
       await sleep(250);
     }
     
     this.updatePlayerStatus();
-    this.setupBoard();
-    this.updateBoardTransform(); // 更新视角
+    this.setupBoard(); // 更新视角
     this.setData({ jumpingCellId: -1 });
     this.handleLanding(pi);
   },
@@ -883,7 +978,6 @@ Page({
     // AI自动执行
     if (p.isAI && !p.isBankrupt) {
       this.setData({ diceDisabled: true, isMoving: false, gameStarted: true });
-      this.updateBoardTransform();
       setTimeout(() => { this.runAITurn(); }, 500);
       return;
     }
@@ -894,7 +988,7 @@ Page({
       gameStarted: true
     });
     
-    this.updateBoardTransform(); // 更新视角到当前玩家
+    this.refreshPlayerTokens(); // 更新视角到当前玩家
   },
   
   advanceToNextNonBankrupt() {
@@ -948,6 +1042,7 @@ Page({
     util.showToast(p.displayName + ' 已破产出局！', 'none');
     this.updatePlayerStatus();
     this.setupBoard();
+    this.refreshPlayerTokens();
     
     const alive = ps.filter(pp => !pp.isBankrupt);
     if (alive.length <= 1) {
@@ -1232,7 +1327,6 @@ Page({
     });
     this.updatePlayerStatus();
     this.setupBoard();
-    this.updateBoardTransform();
     util.showToast('已传送到 ' + BOARD_CELLS[targetId].name, 'success');
     this.handleLanding(this.data.currentPlayerIndex);
     this.updateUI();
