@@ -1,9 +1,7 @@
-﻿/* ==========================================
+/* ==========================================
    大富翁 - 马卡龙潮玩风 UI
-   Glassmorphism + 3D Jelly Buttons
    ========================================== */
 
-/* 全局容器 */
 .game-container {
   width: 100%;
   min-height: 100vh;
@@ -15,7 +13,6 @@
   box-sizing: border-box;
 }
 
-/* 棋盘场景 */
 .board-scene {
   position: relative;
   display: flex;
@@ -24,7 +21,6 @@
   margin: 16rpx auto;
 }
 
-/* 棋盘底板 */
 .board {
   position: relative;
   background: linear-gradient(145deg, #e8ecf1, #d5dce6);
@@ -34,7 +30,6 @@
     inset 0 2rpx 0 rgba(255,255,255,0.6);
 }
 
-/* ===== 格子 ===== */
 .cell {
   position: absolute;
   background: #ffffff;
@@ -45,16 +40,10 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  transition: transform 0.15s, box-shadow 0.15s;
   box-sizing: border-box;
   transform: translate(-50%, -50%);
 }
-.cell:active {
-  transform: translate(-50%, -50%) scale(0.95);
-  box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.1);
-}
 
-/* 地段色条 */
 .cell-color-bar {
   position: absolute;
   top: 0;
@@ -67,7 +56,6 @@
   height: 10rpx;
 }
 
-/* 格子内容 */
 .cell-inner {
   display: flex;
   flex-direction: column;
@@ -98,14 +86,12 @@
   font-weight: 500;
 }
 
-/* 格子类型样式 */
 .cell-start { background: #fff5f5; }
 .cell-corner { background: #f7fafc; }
 .cell-chance { background: #fffff0; }
 .cell-fortune { background: #f0f9ff; }
 .cell-tax { background: #fff5f0; }
 
-/* 房屋标记 */
 .house-dots {
   position: absolute;
   bottom: 2rpx;
@@ -117,7 +103,6 @@
   line-height: 1;
 }
 
-/* 业主圆点 */
 .owner-dot {
   position: absolute;
   top: 4rpx;
@@ -128,7 +113,6 @@
   border: 2rpx solid rgba(255,255,255,0.8);
 }
 
-/* ===== 中心广场（毛玻璃） ===== */
 .board-center {
   position: absolute;
   display: flex;
@@ -139,9 +123,7 @@
 .center-glass {
   width: 90%;
   height: 90%;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.75);
   border-radius: 24rpx;
   border: 2rpx solid rgba(255,255,255,0.5);
   box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.06);
@@ -154,18 +136,13 @@
 .center-title {
   font-size: 40rpx;
   font-weight: 900;
-  background: linear-gradient(135deg, #FF6B9D, #F59E0B);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: none;
+  color: #FF6B9D;
   letter-spacing: 4rpx;
 }
 .round-text {
   font-size: 28rpx;
   font-weight: 700;
-  color: #FF6B9D;
-  text-shadow: 0 2rpx 4rpx rgba(255,107,157,0.2);
+  color: #F59E0B;
 }
 .turn-text {
   font-size: 22rpx;
@@ -176,13 +153,11 @@
   margin-top: 8rpx;
 }
 
-/* ===== 玩家Token（悬浮层） ===== */
 .player-token {
   position: absolute;
   z-index: 20;
   pointer-events: none;
-  transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: left 0.4s ease, top 0.4s ease;
 }
 .token-avatar {
   width: 40rpx;
@@ -193,38 +168,24 @@
   justify-content: center;
   font-size: 24rpx;
   border: 3rpx solid rgba(255,255,255,0.9);
-  transition: transform 0.3s;
-  position: relative;
-  z-index: 2;
 }
 .token-current .token-avatar {
   transform: scale(1.3);
-  animation: tokenBounce 0.8s ease-in-out infinite;
-}
-@keyframes tokenBounce {
-  0%, 100% { transform: scale(1.3) translateY(0); }
-  50% { transform: scale(1.3) translateY(-6rpx); }
 }
 
-/* 当前玩家脉冲光环 */
 .token-pulse {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
   width: 50rpx;
   height: 50rpx;
+  margin-left: -25rpx;
+  margin-top: -25rpx;
   border-radius: 50%;
   background: rgba(255,107,157,0.3);
-  animation: pulseRing 1.5s ease-out infinite;
   z-index: 1;
 }
-@keyframes pulseRing {
-  0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.8; }
-  100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
-}
 
-/* 浮动文字 */
 .floating-text-layer {
   position: fixed;
   top: 40%;
@@ -243,7 +204,6 @@
   100% { opacity: 0; transform: translateY(-120rpx); }
 }
 
-/* ===== 状态栏 ===== */
 .status-bar {
   display: flex;
   gap: 12rpx;
@@ -264,10 +224,9 @@
   background: rgba(255,255,255,0.8);
   border-radius: 16rpx;
   box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
-  transition: all 0.3s;
 }
 .status-item.current {
-  background: linear-gradient(135deg, #FF6B9D, #FF8E53);
+  background: #FF6B9D;
   box-shadow: 0 4rpx 16rpx rgba(255,107,157,0.3);
 }
 .status-item.current .status-name,
@@ -306,7 +265,6 @@
   font-weight: 500;
 }
 
-/* 等待提示 */
 .waiting-bar {
   text-align: center;
   padding: 12rpx 24rpx;
@@ -320,7 +278,6 @@
   font-weight: 500;
 }
 
-/* ===== 底部操作栏（3D果冻按钮） ===== */
 .action-bar {
   display: flex;
   flex-wrap: wrap;
@@ -347,51 +304,19 @@
   border-radius: 20rpx;
   color: #FFF;
   letter-spacing: 2rpx;
-  transition: all 0.12s ease;
-  box-shadow:
-    inset 0 6rpx 0 rgba(255,255,255,0.35),
-    0 10rpx 0 rgba(0,0,0,0.12),
-    0 6rpx 16rpx rgba(0,0,0,0.08);
-  transform: translateY(0);
   line-height: 1;
-}
-.btn-jelly::after {
-  content: '';
-  display: none;
-}
-.btn-jelly:active {
-  box-shadow:
-    inset 0 4rpx 0 rgba(255,255,255,0.2),
-    0 2rpx 0 rgba(0,0,0,0.12),
-    0 2rpx 8rpx rgba(0,0,0,0.06);
-  transform: translateY(10rpx);
 }
 
 .btn-icon { font-size: 26rpx; }
 
-/* 各按钮配色 */
-.btn-buy { background: linear-gradient(180deg, #a8e6cf, #56ab91); }
-.btn-buy:active { background: linear-gradient(180deg, #8dd5b8, #4a967e); }
+.btn-buy { background: #56ab91; }
+.btn-build { background: #e07a6d; }
+.btn-bank { background: #5b9aa5; }
+.btn-assets { background: #9b6dcd; }
+.btn-item { background: #e8a87c; }
+.btn-shop { background: #d4941a; }
+.btn-end { background: #8e9eab; }
 
-.btn-build { background: linear-gradient(180deg, #ffaaa5, #e07a6d); }
-.btn-build:active { background: linear-gradient(180deg, #f0908a, #c96a5e); }
-
-.btn-bank { background: linear-gradient(180deg, #90cbd3, #5b9aa5); }
-.btn-bank:active { background: linear-gradient(180deg, #7ab8c0, #4d8690); }
-
-.btn-assets { background: linear-gradient(180deg, #d4a5ff, #9b6dcd); }
-.btn-assets:active { background: linear-gradient(180deg, #c08eff, #855ab8); }
-
-.btn-item { background: linear-gradient(180deg, #ffd3b6, #e8a87c); }
-.btn-item:active { background: linear-gradient(180deg, #f5c0a0, #d4956a); }
-
-.btn-shop { background: linear-gradient(180deg, #f9ca24, #d4941a); }
-.btn-shop:active { background: linear-gradient(180deg, #eebb10, #c08412); }
-
-.btn-end { background: linear-gradient(180deg, #c3cfe2, #8e9eab); }
-.btn-end:active { background: linear-gradient(180deg, #b0bdd4, #7a8b9a); }
-
-/* 道具浮层 */
 .prop-float {
   position: fixed;
   bottom: 200rpx;
@@ -411,17 +336,11 @@
   background: rgba(255,255,255,0.95);
   border-radius: 20rpx;
   box-shadow: 0 6rpx 20rpx rgba(0,0,0,0.1);
-  backdrop-filter: blur(4px);
-}
-.prop-float-item:active {
-  transform: scale(0.95);
-  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.15);
 }
 .pfi-icon { font-size: 36rpx; }
 .pfi-name { font-size: 24rpx; font-weight: 600; color: #4a5568; }
 .pfi-price { font-size: 22rpx; color: #F59E0B; font-weight: 600; }
 
-/* ===== 菜单 ===== */
 .menu-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -440,7 +359,6 @@
   right: 0; top: 0; bottom: 0;
   width: 340rpx;
   background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(10px);
   padding: 40rpx 28rpx;
   display: flex;
   flex-direction: column;
