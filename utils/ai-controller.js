@@ -1,4 +1,4 @@
-﻿const { BOARD_CELLS, getRentForLevel } = require('./game-data');
+const { BOARD_CELLS, getRentForLevel } = require('./game-data');
 
 const DIFFICULTY = {
   EASY: { buyThreshold: 0.3, buildThreshold: 0.2, name: '简单' },

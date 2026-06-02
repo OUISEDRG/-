@@ -1,4 +1,4 @@
-﻿﻿const { BOARD_CELLS, BOARD_SIZE, ROLES, createInitialDeck, createPlayers, calculatePlayerNetWorth, getRentForLevel } = require('../../utils/game-data');
+const { BOARD_CELLS, BOARD_SIZE, ROLES, createInitialDeck, createPlayers, calculatePlayerNetWorth, getRentForLevel } = require('../../utils/game-data');
 const storage = require('../../utils/storage');
 const util = require('../../utils/util');
 const app = getApp();
@@ -88,7 +88,9 @@ Page({
       return { ...p, displayName: c ? c.name : p.name, avatar: role.avatar, bgColor: role.bgColor, roleColor: role.color,
         displayMoney: util.formatMoney(p.money), isCurrent: i === 0, propertiesCount: 0, properties: [], isBankrupt: false,
         inJail: false, jailTurns: 0, skipNextTurn: false, doubleRentTurns: 0,
-        skillType: role.skillType || '', skillValue: role.skillValue || 0, freeRentUsed: false, items: [], hasLoan: false };
+        skillType: role.skillType || '', skillValue: role.skillValue || 0, freeRentUsed: false,
+        items: p.items || [], hasLoan: p.hasLoan || false, loanAmount: p.loanAmount || 0, loanInterest: p.loanInterest || 0,
+        isAI: p.isAI || false, aiDifficulty: p.aiDifficulty || 'normal' }; // 修复：保留存档中的道具/贷款/AI状态
     });
   },
 

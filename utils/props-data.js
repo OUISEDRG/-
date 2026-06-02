@@ -1,4 +1,4 @@
-﻿const ITEMS = {
+const ITEMS = {
   reverseDice: { id: 'reverseDice', name: '反转骰子', icon: '🔄', desc: '朝反方向移动', price: 800 },
   doubleDice: { id: 'doubleDice', name: '双倍骰子', icon: '🎲', desc: '步数翻倍', price: 1000 },
   rentShield: { id: 'rentShield', name: '租金盾牌', icon: '🛡️', desc: '免缴一次租金', price: 1200 },

@@ -1,4 +1,4 @@
-﻿<view class="game-container">
+<view class="game-container">
   <!-- 棋盘场景区 -->
   <view class="board-scene" style="width: {{boardSize + 24}}px; height: {{boardSize + 24}}px;">
     <!-- 棋盘底板 -->

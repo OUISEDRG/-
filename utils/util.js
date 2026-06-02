@@ -1,4 +1,4 @@
-﻿﻿function formatMoney(amount) {
+function formatMoney(amount) {
   if (amount >= 10000) {
     return (amount / 10000).toFixed(1) + '万';
   }

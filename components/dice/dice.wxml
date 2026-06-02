@@ -1,6 +1,11 @@
 <view class="dice-wrapper" bindtap="onRoll">
-  <view class="dice {{animating ? 'rolling' : ''}}">
-    <text class="dice-value">{{displayValue}}</text>
+  <view class="dice-double">
+    <view class="dice {{animating ? 'rolling' : ''}}">
+      <text class="dice-value">{{displayValue1}}</text>
+    </view>
+    <view class="dice {{animating ? 'rolling' : ''}}">
+      <text class="dice-value">{{displayValue2}}</text>
+    </view>
   </view>
   <text class="dice-label">{{animating ? '投掷中...' : '点击掷骰子'}}</text>
 </view>
