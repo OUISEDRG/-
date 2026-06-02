@@ -1,7 +1,11 @@
 <view class="container">
+  <view class="bg-layer bg-cloud-1"></view>
+  <view class="bg-layer bg-cloud-2"></view>
+  <view class="bg-layer bg-dots"></view>
+
   <view class="header">
     <view class="logo-area">
-      <text class="logo-icon">🎲</text>
+      <text class="logo-icon">🎩</text>
       <text class="logo-title">大富翁</text>
       <text class="logo-subtitle">经典地产大亨</text>
     </view>
@@ -9,10 +13,33 @@
 
   <view class="menu-area">
     <view class="menu-card new-game" bindtap="onNewGame">
-      <text class="menu-icon">🎮</text>
+      <text class="menu-icon">🎲</text>
       <view class="menu-text">
-        <text class="menu-title">开始新游戏</text>
+        <text class="menu-title">单人模式</text>
         <text class="menu-desc">选择人数和角色，开启大富翁之旅</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <!-- 联机入口 -->
+    <view class="menu-section-label">
+      <text>🌐 联机对战</text>
+    </view>
+
+    <view class="menu-card online create-room" bindtap="onCreateRoom">
+      <text class="menu-icon">🏠</text>
+      <view class="menu-text">
+        <text class="menu-title">创建房间</text>
+        <text class="menu-desc">创建联机房，邀请好友对战</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-card online join-room" bindtap="onJoinRoom">
+      <text class="menu-icon">🚪</text>
+      <view class="menu-text">
+        <text class="menu-title">加入房间</text>
+        <text class="menu-desc">输入房间号，加入好友对战</text>
       </view>
       <text class="menu-arrow">›</text>
     </view>
@@ -27,7 +54,7 @@
     </view>
 
     <view class="menu-card rules" bindtap="onRules">
-      <text class="menu-icon">📖</text>
+      <text class="menu-icon">📋</text>
       <view class="menu-text">
         <text class="menu-title">游戏规则</text>
         <text class="menu-desc">了解游戏玩法和规则说明</text>
@@ -37,6 +64,6 @@
   </view>
 
   <view class="footer">
-    <text class="footer-text">🎉 经典大富翁 欢乐无限</text>
+    <text class="footer-text">🎉 经典大富翁 · 欢乐无限</text>
   </view>
 </view>

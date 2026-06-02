@@ -1,34 +1,42 @@
 .container {
   min-height: 100vh;
-  background: #F5F5F5;
-  padding: 20rpx 30rpx 40rpx;
+  background: linear-gradient(180deg, #FFF5F7 0%, #F3E8FF 50%, #E8F8F5 100%);
+  padding: 20rpx 20rpx 40rpx;
 }
 
 .section {
-  background: #FFFFFF;
-  border-radius: 20rpx;
-  padding: 28rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06);
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10rpx);
+  -webkit-backdrop-filter: blur(10rpx);
+  border-radius: var(--radius-lg);
+  padding: 28rpx 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.05);
+  animation: slideUp 0.5s ease-out both;
 }
+
+.section:nth-child(2) { animation-delay: 0.05s; }
+.section:nth-child(3) { animation-delay: 0.1s; }
+.section:nth-child(4) { animation-delay: 0.15s; }
 
 .section-title {
   display: flex;
   align-items: center;
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 24rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 20rpx;
 }
 
 .section-icon {
-  margin-right: 12rpx;
-  font-size: 36rpx;
+  margin-right: 10rpx;
+  font-size: 34rpx;
 }
 
+/* 玩家数量选择 */
 .player-count-selector {
   display: flex;
-  gap: 20rpx;
+  gap: 16rpx;
 }
 
 .count-option {
@@ -36,125 +44,212 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24rpx;
+  padding: 20rpx;
   background: #F8F9FA;
-  border-radius: 16rpx;
-  border: 2rpx solid transparent;
-  transition: all 0.2s;
+  border-radius: var(--radius-md);
+  border: 3rpx solid transparent;
+  transition: all 0.25s ease;
 }
 
 .count-option.active {
-  background: #FFF0F0;
-  border-color: #E74C3C;
+  background: linear-gradient(135deg, #FFF0F5, #F3E8FF);
+  border-color: var(--color-primary);
+  box-shadow: 0 4rpx 16rpx var(--color-shadow);
+  transform: scale(1.05);
 }
 
 .count-num {
-  font-size: 48rpx;
-  font-weight: 700;
-  color: #333;
+  font-size: 44rpx;
+  font-weight: 800;
+  color: var(--color-text);
 }
 
 .count-option.active .count-num {
-  color: #E74C3C;
+  color: var(--color-primary);
 }
 
 .count-label {
   font-size: 24rpx;
-  color: #999;
-  margin-top: 4rpx;
+  color: var(--color-text-light);
+  margin-top: 2rpx;
 }
 
-.money-selector {
-  display: flex;
-  gap: 16rpx;
-  flex-wrap: wrap;
-}
-
-.money-option {
-  flex: 1;
-  min-width: calc(25% - 12rpx);
-  text-align: center;
-  padding: 20rpx 16rpx;
-  background: #F8F9FA;
-  border-radius: 12rpx;
-  border: 2rpx solid transparent;
-}
-
-.money-option.active {
-  background: #FFF0F0;
-  border-color: #E74C3C;
-}
-
-.money-amount {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #333;
-}
-
-.money-option.active .money-amount {
-  color: #E74C3C;
-}
-
-.role-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16rpx;
+/* Swiper 角色选择 */
+.role-swiper {
+  height: 420rpx;
+  margin: 0 -20rpx;
 }
 
 .role-card {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8rpx;
+}
+
+.role-card-inner {
+  width: 100%;
+  height: 380rpx;
+  background: #FFF;
+  border-radius: var(--radius-xl);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20rpx 12rpx;
-  background: #F8F9FA;
-  border-radius: 16rpx;
-  border: 2rpx solid transparent;
+  justify-content: center;
+  padding: 20rpx 16rpx;
+  box-shadow: 0 8rpx 30rpx rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
   position: relative;
-  transition: all 0.2s;
+  overflow: hidden;
 }
 
-.role-card.selected {
-  background: #FFF0F0;
-  border-color: #E74C3C;
+.role-card.selected .role-card-inner {
+  box-shadow: 0 8rpx 30rpx rgba(255,107,157,0.25);
+  border: 3rpx solid var(--color-primary);
 }
 
-.role-card.disabled {
+.role-card.disabled .role-card-inner {
   opacity: 0.4;
+  filter: grayscale(0.6);
+}
+
+.role-avatar-wrap {
+  margin-bottom: 12rpx;
+}
+
+.role-avatar-ring {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid #EEE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rpx;
+  transition: all 0.3s;
+}
+
+.role-avatar-ring.pulse-ring {
+  animation: ringPulse 2s ease-in-out infinite;
+}
+
+@keyframes ringPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,157,0.4); }
+  50% { box-shadow: 0 0 0 16rpx rgba(255,107,157,0); }
 }
 
 .role-avatar {
-  width: 80rpx;
-  height: 80rpx;
+  width: 104rpx;
+  height: 104rpx;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 44rpx;
-  margin-bottom: 10rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.1);
+}
+
+.role-emoji {
+  font-size: 56rpx;
 }
 
 .role-name {
-  font-size: 26rpx;
-  color: #333;
-  font-weight: 500;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 8rpx;
 }
 
-.role-check {
+.role-skill-badge {
+  padding: 6rpx 18rpx;
+  border-radius: 20rpx;
+  margin-bottom: 8rpx;
+}
+
+.skill-name {
+  font-size: 22rpx;
+  color: #FFF;
+  font-weight: 600;
+}
+
+.role-skill-desc {
+  font-size: 22rpx;
+  color: var(--color-text-light);
+  text-align: center;
+  line-height: 1.5;
+  padding: 0 10rpx;
+}
+
+.role-check-mark {
   position: absolute;
-  top: 8rpx;
-  right: 8rpx;
-  width: 36rpx;
-  height: 36rpx;
-  background: #E74C3C;
+  top: 16rpx;
+  right: 16rpx;
+  width: 44rpx;
+  height: 44rpx;
+  background: var(--color-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #FFF;
-  font-size: 22rpx;
+  font-size: 26rpx;
   font-weight: 700;
+  box-shadow: 0 4rpx 12rpx rgba(255,107,157,0.4);
 }
 
+/* Swiper dots */
+.swiper-dots {
+  display: flex;
+  justify-content: center;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 6rpx;
+  background: #DDD;
+  transition: all 0.3s;
+}
+
+.dot.active {
+  background: var(--color-primary);
+  width: 28rpx;
+}
+
+/* 初始资金 Slider */
+.money-display {
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.money-value {
+  display: block;
+  font-size: 56rpx;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1.2;
+}
+
+.money-raw {
+  font-size: 24rpx;
+  color: var(--color-text-light);
+}
+
+.money-slider {
+  width: 100%;
+}
+
+.money-range {
+  display: flex;
+  justify-content: space-between;
+  font-size: 22rpx;
+  color: var(--color-text-light);
+  margin-top: 4rpx;
+}
+
+/* 已选玩家列表 */
 .player-list {
   display: flex;
   flex-direction: column;
@@ -165,20 +260,29 @@
   display: flex;
   align-items: center;
   background: #F8F9FA;
-  border-radius: 12rpx;
-  padding: 16rpx 20rpx;
+  border-radius: var(--radius-sm);
+  padding: 16rpx 16rpx;
 }
 
 .player-avatar {
   font-size: 40rpx;
-  margin-right: 16rpx;
+  margin-right: 14rpx;
 }
 
 .player-name {
   flex: 1;
-  font-size: 30rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.player-skill-tag {
+  font-size: 20rpx;
+  color: #FFF;
+  padding: 4rpx 14rpx;
+  border-radius: 16rpx;
+  margin-right: 12rpx;
   font-weight: 500;
-  color: #333;
 }
 
 .player-remove {
@@ -187,12 +291,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28rpx;
-  color: #E74C3C;
+  font-size: 26rpx;
+  color: var(--color-danger);
   border-radius: 50%;
   background: #FFF0F0;
+  font-weight: 700;
 }
 
+/* 开始按钮 */
 .start-btn-area {
   margin-top: 20rpx;
   padding: 10rpx 0 30rpx;
@@ -201,16 +307,51 @@
 .start-btn {
   width: 100%;
   padding: 28rpx;
-  background: linear-gradient(135deg, #E74C3C, #C0392B);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   color: #FFFFFF;
   font-size: 36rpx;
-  font-weight: 600;
-  border-radius: 16rpx;
+  font-weight: 700;
+  border-radius: var(--radius-lg);
   text-align: center;
   letter-spacing: 4rpx;
+  box-shadow: 0 10rpx 30rpx rgba(255,107,157,0.35);
+  animation: breathe 2.5s ease-in-out infinite;
+  transition: all 0.2s;
 }
 
 .start-btn.disabled {
-  background: #CCC;
-  color: #999;
+  background: #DDD;
+  color: #AAA;
+  box-shadow: none;
+  animation: none;
 }
+
+/* AI配置 */
+.ai-list { margin-top: 10rpx; }
+.ai-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  background: #FFF;
+  border-radius: 12rpx;
+  margin-bottom: 10rpx;
+}
+.ai-player-name { font-size: 28rpx; color: #333; }
+.ai-toggle {
+  padding: 8rpx 24rpx;
+  border-radius: 24rpx;
+  background: #F0F0F0;
+  font-size: 24rpx;
+  transition: all 0.3s;
+}
+.ai-toggle.active { background: #7C3AED; color: #FFF; }
+.ai-difficulty { display: flex; align-items: center; gap: 12rpx; margin-top: 10rpx; }
+.ai-diff-label { font-size: 24rpx; color: #666; }
+.diff-option {
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  background: #F0F0F0;
+  font-size: 22rpx;
+}
+.diff-option.active { background: #FF6B9D; color: #FFF; }

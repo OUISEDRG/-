@@ -1,0 +1,39 @@
+<view class="container">
+  <view class="room-header">
+    <text class="room-label">房间号</text>
+    <text class="room-id">{{roomId}}</text>
+    <text class="room-status status-{{status}}">{{status === 'waiting' ? '等待中' : '游戏中'}}</text>
+  </view>
+
+  <view class="player-section">
+    <text class="section-title">👥 玩家列表 ({{playerCount}}/{{maxPlayers}})</text>
+    <view class="player-grid">
+      <view class="player-slot {{item ? 'filled' : 'empty'}}" wx:for="{{[0,1,2,3]}}" wx:key="*this">
+        <block wx:if="{{players[index]}}">
+          <view class="player-avatar" style="background: {{players[index].bgColor || '#F0F0F0'}};">
+            {{players[index].avatar || '👤'}}
+          </view>
+          <text class="player-name">{{players[index].name || '玩家'}}</text>
+          <text class="host-badge" wx:if="{{index === 0}}">房主</text>
+        </block>
+        <block wx:else>
+          <text class="empty-icon">❓</text>
+          <text class="empty-text">等待加入...</text>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <view class="actions">
+    <button class="btn-start" wx:if="{{isHost && playerCount >= 2}}" bindtap="onStartGame">
+      🎲 开始游戏
+    </button>
+    <text class="wait-hint" wx:if="{{isHost && playerCount < 2}}">
+      至少需要 2 名玩家才能开始
+    </text>
+    <text class="wait-hint" wx:if="{{!isHost}}">
+      等待房主开始游戏...
+    </text>
+    <button class="btn-leave" bindtap="onLeaveRoom">🚪 离开房间</button>
+  </view>
+</view>

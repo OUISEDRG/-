@@ -7,7 +7,11 @@ Page({
     initialMoney: DEFAULT_INITIAL_MONEY,
     roles: [],
     selectedRoles: [],
-    selectedCount: 0
+    selectedCount: 0,
+    swiperCurrent: 0,
+    aiPlayers: [],
+    aiDifficulty: 'normal',
+    showAiConfig: false,
   },
 
   onLoad() {
@@ -28,14 +32,19 @@ Page({
     this.setData({
       playerCount: count,
       selectedRoles: [],
-      selectedCount: 0
+      selectedCount: 0,
+      swiperCurrent: 0,
     });
     this.resetRoles();
   },
 
-  onSelectMoney(e) {
-    const money = parseInt(e.currentTarget.dataset.money);
+  onMoneyChange(e) {
+    const money = parseInt(e.detail.value);
     this.setData({ initialMoney: money });
+  },
+
+  onSwiperChange(e) {
+    this.setData({ swiperCurrent: e.detail.current });
   },
 
   onSelectRole(e) {
@@ -101,7 +110,7 @@ Page({
   },
 
   updateDisabledRoles(roles, selectedCount) {
-    const selectedIds = this.data.selectedRoles.map(r => r.roleId);
+    const selectedIds = roles.filter(r => r.selected).map(r => r.id);
     roles.forEach((r, i) => {
       roles[i] = {
         ...r,
@@ -119,6 +128,21 @@ Page({
     this.setData({ roles });
   },
 
+  onToggleAI(e) {
+    const playerIndex = parseInt(e.currentTarget.dataset.index);
+    let aiPlayers = [...this.data.aiPlayers];
+    if (aiPlayers.includes(playerIndex)) {
+      aiPlayers = aiPlayers.filter(i => i !== playerIndex);
+    } else {
+      aiPlayers.push(playerIndex);
+    }
+    this.setData({ aiPlayers });
+  },
+
+  onAiDifficulty(e) {
+    this.setData({ aiDifficulty: e.currentTarget.dataset.level });
+  },
+
   onStartGame() {
     const { selectedRoles, playerCount, initialMoney } = this.data;
 
@@ -133,7 +157,9 @@ Page({
         role: r,
       })),
       playerCount,
-      initialMoney
+      initialMoney,
+      aiPlayers: (this.data.aiPlayers || []),
+      aiDifficulty: this.data.aiDifficulty || 'normal',
     };
 
     storage.saveGameConfig(config);

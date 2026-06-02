@@ -1,28 +1,77 @@
 <view class="container">
-  <view class="celebration">
-    <text class="trophy">🏆</text>
-    <text class="congrats-text">恭喜获胜！</text>
+  <!-- 撒花粒子层 -->
+  <view class="confetti-layer">
+    <view class="confetti c1"></view>
+    <view class="confetti c2"></view>
+    <view class="confetti c3"></view>
+    <view class="confetti c4"></view>
+    <view class="confetti c5"></view>
+    <view class="confetti c6"></view>
+    <view class="confetti c7"></view>
+    <view class="confetti c8"></view>
+    <view class="confetti c9"></view>
+    <view class="confetti c10"></view>
+    <view class="confetti c11"></view>
+    <view class="confetti c12"></view>
   </view>
 
+  <!-- 冠军皇冠 -->
+  <view class="crown-area">
+    <text class="crown-icon">👑</text>
+  </view>
+
+  <!-- 祝贺文字 -->
+  <view class="celebration">
+    <text class="trophy">{{winnerAvatar}}</text>
+    <text class="congrats-text">🎉 恭喜获胜！</text>
+  </view>
+
+  <!-- 赢家信息卡片 -->
   <view class="winner-card">
-    <view class="winner-avatar" style="background: {{bgColor || '#FFF5F5'}}">
-      <text>{{winnerAvatar}}</text>
+    <view class="winner-avatar-wrap">
+      <view class="winner-avatar" style="background: {{bgColor || '#FFF5F5'}}">
+        <text>{{winnerAvatar}}</text>
+      </view>
+      <text class="crown-badge">👑</text>
     </view>
     <text class="winner-name">{{winner}}</text>
-    <view class="winner-stats">
+
+    <view class="stats-grid">
       <view class="stat-item">
-        <text class="stat-label">最终资金</text>
-        <text class="stat-value">{{finalMoney}} 元</text>
+        <text class="stat-icon">💰</text>
+        <text class="stat-label">最终现金</text>
+        <text class="stat-value gold">{{finalMoney}}</text>
       </view>
       <view class="stat-item">
+        <text class="stat-icon">💎</text>
+        <text class="stat-label">总资产</text>
+        <text class="stat-value gold">{{netWorth}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-icon">🏠</text>
+        <text class="stat-label">地产数量</text>
+        <text class="stat-value">{{totalProperties}} 处</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-icon">🔄</text>
+        <text class="stat-label">游戏回合</text>
+        <text class="stat-value">{{totalRounds}} 轮</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-icon">👥</text>
         <text class="stat-label">玩家总数</text>
         <text class="stat-value">{{totalPlayers}} 人</text>
       </view>
     </view>
   </view>
 
+  <!-- 按钮组 -->
   <view class="actions">
-    <button class="action-btn primary" bindtap="onPlayAgain">🔄 再来一局</button>
-    <button class="action-btn secondary" bindtap="onBackHome">🏠 返回首页</button>
+    <button class="action-btn primary-btn" bindtap="onPlayAgain">
+      <text class="btn-icon">🔄</text> 再来一局
+    </button>
+    <button class="action-btn home-btn" bindtap="onBackHome">
+      <text class="btn-icon">🏠</text> 返回首页
+    </button>
   </view>
 </view>

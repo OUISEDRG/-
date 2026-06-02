@@ -2,41 +2,46 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16rpx;
+  padding: 8rpx;
 }
 
 .dice {
   width: 120rpx;
   height: 120rpx;
-  background: #FFFFFF;
-  border-radius: 20rpx;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFF8E1 100%);
+  border-radius: 24rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.15);
-  border: 2rpx solid #E0E0E0;
+  box-shadow:
+    inset 0 4rpx 0 rgba(255,255,255,0.8),
+    0 6rpx 0 #BF8F00,
+    0 8rpx 16rpx rgba(0,0,0,0.2);
+  border: 2rpx solid rgba(0,0,0,0.06);
   transition: transform 0.1s;
 }
 
 .dice.rolling {
-  animation: diceRoll 0.1s infinite alternate;
+  animation: dice3DFlip 0.6s ease-in-out;
 }
 
-@keyframes diceRoll {
-  0% { transform: rotate(0deg) scale(1); }
-  25% { transform: rotate(90deg) scale(1.1); }
-  50% { transform: rotate(180deg) scale(1); }
-  75% { transform: rotate(270deg) scale(1.1); }
-  100% { transform: rotate(360deg) scale(1); }
+@keyframes dice3DFlip {
+  0% { transform: rotateX(0) rotateY(0) scale(1); }
+  25% { transform: rotateX(180deg) rotateY(90deg) scale(1.2); }
+  50% { transform: rotateX(360deg) rotateY(180deg) scale(1.15); }
+  75% { transform: rotateX(540deg) rotateY(270deg) scale(1.1); }
+  100% { transform: rotateX(720deg) rotateY(360deg) scale(1); }
 }
 
 .dice-value {
   font-size: 64rpx;
   line-height: 1;
+  text-shadow: 0 2rpx 0 rgba(0,0,0,0.08);
 }
 
 .dice-label {
-  font-size: 24rpx;
-  color: #999;
-  margin-top: 10rpx;
+  font-size: 22rpx;
+  color: #8D6E63;
+  margin-top: 6rpx;
+  font-weight: 600;
 }

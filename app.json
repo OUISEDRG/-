@@ -2,15 +2,16 @@
   "pages": [
     "pages/index/index",
     "pages/setup/setup",
+    "pages/lobby/lobby",
     "pages/game/game",
     "pages/rules/rules",
     "pages/gameover/gameover"
   ],
   "window": {
     "navigationBarTitleText": "大富翁",
-    "navigationBarBackgroundColor": "#E74C3C",
+    "navigationBarBackgroundColor": "#FF6B9D",
     "navigationBarTextStyle": "white",
-    "backgroundColor": "#F5F5F5",
+    "backgroundColor": "#FFF5F7",
     "backgroundTextStyle": "dark"
   },
   "usingComponents": {},

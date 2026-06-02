@@ -7,6 +7,9 @@ Page({
     winnerAvatar: '',
     finalMoney: '',
     totalPlayers: 0,
+    totalRounds: 0,
+    totalProperties: 0,
+    netWorth: '',
     bgColor: '#FFF5F5'
   },
 
@@ -15,26 +18,28 @@ Page({
     const winnerAvatar = decodeURIComponent(options.winnerAvatar || '🏆');
     const money = parseInt(options.money || 0);
     const totalPlayers = parseInt(options.totalPlayers || 2);
+    const totalRounds = parseInt(options.totalRounds || 1);
+    const totalProperties = parseInt(options.totalProperties || 0);
+    const netWorth = parseInt(options.netWorth || money);
 
     this.setData({
       winner,
       winnerAvatar,
       finalMoney: util.formatMoney(money),
-      totalPlayers
+      totalPlayers,
+      totalRounds,
+      totalProperties,
+      netWorth: util.formatMoney(netWorth)
     });
 
     storage.clearGameData();
   },
 
   onPlayAgain() {
-    wx.redirectTo({
-      url: '/pages/setup/setup'
-    });
+    wx.redirectTo({ url: '/pages/setup/setup' });
   },
 
   onBackHome() {
-    wx.redirectTo({
-      url: '/pages/index/index'
-    });
+    wx.redirectTo({ url: '/pages/index/index' });
   }
 });
